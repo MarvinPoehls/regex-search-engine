@@ -6,10 +6,12 @@ $config = [
     'www.google.com' => [
         'searchDivId' => 'main',
         'pattern' => '/<a[^>]+href="\/url\?q=([^&]+)&[^>]*>(?:(?!<\/a>).)*?<h3[^>]*><div[^>]+>(.*?)<\/div><\/h3/',
+        'utf8_encode' => true,
     ],
     'www.bing.com' => [
         'searchDivId' => 'b_mcw',
         'pattern' => '/<h2[^>]*><a[^"]*"(.*?)"[^>]*>(.*?)<\/a><\/h2>/',
+        'utf8_encode' => false,
     ],
 ];
 $config = $config[$engine];
@@ -23,7 +25,6 @@ if ($engine && $query) {
 }
 
 include "view.php";
-exit;
 
 function getRequestParameter($key, $default = null) {
     if (isset($_REQUEST[$key])) {
@@ -34,7 +35,8 @@ function getRequestParameter($key, $default = null) {
     return $default;
 }
 
-function getContent($url, $searchDivId) {
+function getContent($url, $searchDivId): string
+{
     $html = file_get_contents($url);
     $startPos = strpos($html, '<div id="' . $searchDivId . '"');
     $startPos = strpos($html, '>', $startPos) + 1;

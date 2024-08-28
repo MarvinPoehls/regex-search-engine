@@ -46,7 +46,7 @@
             <div class="col-6 px-5">
                 <div class="row">
                     <div class="col"></div>
-                    <div class="col-auto mt-3">
+                    <div class="col-auto mt-5">
                         <h1 class="fw-bold underlined">Regex Search-Engine</h1>
                     </div>
                     <div class="col"></div>
@@ -54,13 +54,13 @@
                 <form action="index.php" method="get">
                     <div class="row mt-5">
                         <div class="col-auto p-0">
-                            <select class="form-control engine-dropdown" name="engine">
+                            <select class="form-control engine-dropdown" name="engine" title="Search Engine">
                                 <option value="www.google.com" <?= $engine == 'www.google.com' ? 'selected' : '' ?>>Google</option>
                                 <option value="www.bing.com" <?= $engine == 'www.bing.com' ? 'selected' : '' ?>>Bing</option>
                             </select>
                         </div>
                         <div class="col p-0">
-                            <input class="form-control searchbar" type="search" name="query" value="<?= !empty($query) ? $query : '' ?>">
+                            <input class="form-control searchbar" type="search" name="query" title="searchbar" placeholder="Websuche" value="<?= !empty($query) ? $query : '' ?>">
                         </div>
                         <div class="col-auto p-0">
                             <button type="submit" class="btn btn-primary search-button"><i class="bi bi-search"></i></button>
@@ -71,7 +71,7 @@
                             <?php for ($i = 0; $i < $SUGGESTION_LIMIT; $i++) { ?>
                                 <?php if (isset($matches[1][$i]) && isset($matches[2][$i])) { ?>
                                     <div class="py-2 px-3 headline">
-                                        <a href="<?= urldecode($matches[1][$i]) ?>"><i class="bi bi-search me-2"></i><?= utf8_encode($matches[2][$i]) ?></a>
+                                        <a href="<?= urldecode($matches[1][$i]) ?>"><i class="bi bi-search me-2"></i><?= $config['utf8_encode'] ? utf8_encode($matches[2][$i]) : $matches[2][$i] ?></a>
                                     </div>
                                 <?php } ?>
                             <?php } ?>
