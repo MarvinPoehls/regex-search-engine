@@ -26,7 +26,7 @@
             border-radius: 0.75rem;
         }
 
-        .underlined {
+        .underline {
             text-decoration: underline;
         }
 
@@ -47,7 +47,7 @@
                 <div class="row">
                     <div class="col"></div>
                     <div class="col-auto mt-5">
-                        <h1 class="fw-bold underlined">Regex Search-Engine</h1>
+                        <h1 class="fw-bolder">Regex Search-Engine</h1>
                     </div>
                     <div class="col"></div>
                 </div>
@@ -66,17 +66,29 @@
                             <button type="submit" class="btn btn-primary search-button"><i class="bi bi-search"></i></button>
                         </div>
                     </div>
-                    <?php if (isset($matches)) { ?>
-                        <div class="suggestions mt-3 shadow overflow-hidden">
+                    <div class="suggestions mt-3 shadow overflow-hidden">
+                        <?php if (!empty($matches[1])) { ?>
                             <?php for ($i = 0; $i < $SUGGESTION_LIMIT; $i++) { ?>
                                 <?php if (isset($matches[1][$i]) && isset($matches[2][$i])) { ?>
-                                    <div class="py-2 px-3 headline">
-                                        <a href="<?= urldecode($matches[1][$i]) ?>"><i class="bi bi-search me-2"></i><?= $config['utf8_encode'] ? utf8_encode($matches[2][$i]) : $matches[2][$i] ?></a>
-                                    </div>
+                                    <a href="<?= urldecode($matches[1][$i]) ?>">
+                                        <div class="py-2 px-3 headline">
+                                            <div class="row">
+                                                <div class="col-auto d-flex align-items-center justify-content-center">
+                                                    <i class="bi bi-search"></i>
+                                                </div>
+                                                <div class="col">
+                                                    <p class="m-0 underline"><?= $config['utf8_encode'] ? utf8_encode($matches[2][$i]) : $matches[2][$i] ?></p>
+                                                    <p class="text-secondary"><?= $config['utf8_encode'] ? utf8_encode($matches[3][$i]) : $matches[3][$i] ?></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
                                 <?php } ?>
                             <?php } ?>
-                        </div>
-                    <?php } ?>
+                        <?php } else {?>
+                            <p class="text-secondary m-0 py-2 px-3">Es wurden keine Ergebnisse für deine Suche gefunden.</p>
+                        <?php } ?>
+                    </div>
                 </form>
             </div>
             <div class="col"></div>

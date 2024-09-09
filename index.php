@@ -5,16 +5,19 @@ $query = getRequestParameter('query');
 $config = [
     'www.google.com' => [
         'searchDivId' => 'main',
-        'pattern' => '/<a[^>]+href="\/url\?q=([^&]+)&[^>]*>(?:(?!<\/a>).)*?<h3[^>]*><div[^>]+>(.*?)<\/div><\/h3/',
+        'pattern' => '/<a[^>]+href="\/url\?q=([^&]+)&[^>]*>(?:(?!<\/a>).)*?<h3[^>]*><div[^>]+>(.*?)<\/div><\/h3.*?(?<=<div class="BNeawe s3v9rd AP7Wnd">)([^<]+)(?=<\/div><\/div><\/div><\/div><\/div><\/div>)/',
         'utf8_encode' => true,
     ],
     'www.bing.com' => [
-        'searchDivId' => 'b_mcw',
-        'pattern' => '/<h2[^>]*><a[^"]*"(.*?)"[^>]*>(.*?)<\/a><\/h2>/',
+        'searchDivId' => 'b_results',
+        'pattern' => '/<h2[^>]*><a[^"]*"(.*?)"[^>]*>(.*?)<\/a><\/h2>.*?(?<=<span class="algoSlug_icon" data-priority="2">WEB<\/span>)(.*?)(?=<\/p>)/',
         'utf8_encode' => false,
     ],
 ];
-$config = $config[$engine];
+
+if (isset($config[$engine])) {
+    $config = $config[$engine];
+}
 
 if ($engine && $query) {
     $url = "https://".$engine."/search?q=".urlencode($query);
