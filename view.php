@@ -24,6 +24,8 @@
         .suggestions {
             border: solid 1px #dee2e6;
             border-radius: 0.75rem;
+            overflow-y: scroll; !important;
+            max-height: 70vh;
         }
 
         .underline {
@@ -40,10 +42,10 @@
         }
     </style>
 </head>
-    <body class="bg-light">
+    <body class="bg-light overflow-hidden">
         <div class="row">
             <div class="col"></div>
-            <div class="col-6 px-5">
+            <div class="col-12 col-sm-8 col-lg-6 px-5">
                 <div class="row">
                     <div class="col"></div>
                     <div class="col-auto mt-5">
@@ -66,9 +68,9 @@
                             <button type="submit" class="btn btn-primary search-button"><i class="bi bi-search"></i></button>
                         </div>
                     </div>
-                    <div class="suggestions mt-3 shadow overflow-hidden">
+                    <div class="suggestions mt-3 shadow">
                         <?php if (!empty($matches[1])) { ?>
-                            <?php for ($i = 0; $i < $SUGGESTION_LIMIT; $i++) { ?>
+                            <?php for ($i = 0; $i < count($matches[1]); $i++) { ?>
                                 <?php if (isset($matches[1][$i]) && isset($matches[2][$i])) { ?>
                                     <a href="<?= urldecode($matches[1][$i]) ?>">
                                         <div class="py-2 px-3 headline">

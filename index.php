@@ -1,17 +1,20 @@
 <?php
-$SUGGESTION_LIMIT = 3;
+
+const PAGE_COUNT = 3;
 $engine = getRequestParameter('engine');
 $query = getRequestParameter('query');
 $config = [
     'www.google.com' => [
         'searchDivId' => 'main',
-        'pattern' => '/<a[^>]+href="\/url\?q=([^&]+)&[^>]*>(?:(?!<\/a>).)*?<h3[^>]*><div[^>]+>(.*?)<\/div><\/h3.*?(?<=<div class="BNeawe s3v9rd AP7Wnd">)([^<]+)(?=<\/div><\/div><\/div><\/div><\/div><\/div>)/',
+        'pattern' => '/<a[^>]+href="\/url\?q=([^&]+)&[^>]*>(?:(?!<\/a>).)*?<h3[^>]*><div[^>]+>(.*?)<\/div><\/h3.*?(?<=<div class="BNeawe s3v9rd AP7Wnd">).*?<div class="BNeawe s3v9rd AP7Wnd">(.*?)(?=<\/div><\/div><\/div>)/',
         'utf8_encode' => true,
+        'pagination_parameter' => 'start',
     ],
     'www.bing.com' => [
         'searchDivId' => 'b_results',
-        'pattern' => '/<h2[^>]*><a[^"]*"(.*?)"[^>]*>(.*?)<\/a><\/h2>.*?(?<=<span class="algoSlug_icon" data-priority="2">WEB<\/span>)(.*?)(?=<\/p>)/',
+        'pattern' => '/<li class="b_algo".*?<h2[^>]*><a.*?href="([^"]*)"[^>]*>(.*?)<\/a><\/h2>.*?(?<=<p class="b_lineclamp\d b_algoSlug"><span class="algoSlug_icon" data-priority="\d">WEB<\/span>)(.*?)(?=<\/p>)/',
         'utf8_encode' => false,
+        'pagination_parameter' => 'first',
     ],
 ];
 
@@ -20,11 +23,22 @@ if (isset($config[$engine])) {
 }
 
 if ($engine && $query) {
-    $url = "https://".$engine."/search?q=".urlencode($query);
+    $matches = [];
+    for ($i = 0; $i < PAGE_COUNT * 10; $i += 10) {
+        $url = "https://".$engine."/search?q=".urlencode($query)."&".$config['pagination_parameter']."=".$i;
 
-    $content = getContent($url, $config['searchDivId']);
+        $content = getContent($url, $config['searchDivId']);
 
-    preg_match_all($config['pattern'], $content, $matches);
+        preg_match_all($config['pattern'], $content, $match);
+
+        foreach ($match as $key => $value) {
+            $matches[$key] = isset($matches[$key]) ? array_merge($matches[$key], $value) : $value;
+        }
+    }
+
+    foreach ($matches as $key => $selection)
+        foreach ($selection as $index => $text)
+            $matches[$key][$index] = strip_tags($text);
 }
 
 include "view.php";
